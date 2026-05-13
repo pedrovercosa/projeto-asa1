@@ -1,0 +1,5 @@
+.vagrant/
+*.vdi
+*.log
+id_rsa*
+.DS_Store
