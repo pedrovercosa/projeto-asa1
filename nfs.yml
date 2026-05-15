@@ -1,0 +1,51 @@
+---
+- name: Configurar Servidor NFS (ARQ)
+  hosts: arq
+  become: yes
+  tasks:
+    - name: Instalar servidor NFS
+      apt:
+        name: nfs-kernel-server
+        state: present
+
+    - name: Criar diretório de exportação
+      file:
+        path: /mnt/arquivos
+        state: directory
+        mode: '0777'
+
+    - name: Configurar /etc/exports
+      lineinfile:
+        path: /etc/exports
+        line: "/mnt/arquivos 192.168.56.0/24(rw,sync,no_root_squash,no_subtree_check,insecure)"
+        create: yes
+      notify: restart_nfs
+
+  handlers:
+    - name: restart_nfs
+      service:
+        name: nfs-kernel-server
+        state: restarted
+
+- name: Configurar Clientes NFS
+  hosts: db,app,cli
+  become: yes
+  tasks:
+    - name: Instalar cliente NFS
+      apt:
+        name: nfs-common
+        state: present
+
+    - name: Criar ponto de montagem
+      file:
+        path: /mnt/dados
+        state: directory
+
+    - name: Montar compartilhamento NFS
+      mount:
+        path: /mnt/dados
+        src: 192.168.56.136:/mnt/arquivos
+        fstype: nfs
+        # Forçamos nfsvers=3 e tcp para estabilidade total na rede interna
+        opts: "nfsvers=3,proto=tcp,nolock,soft"
+        state: mounted

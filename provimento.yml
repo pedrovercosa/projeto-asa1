@@ -1,0 +1,51 @@
+---
+- name: Configuração Base de Infraestrutura
+  hosts: servidores
+  become: yes
+  tasks:
+    - name: Atualizar repositório e sistema
+      apt:
+        update_cache: yes
+        #upgrade: dist
+
+    - name: Ajustar Zona de Tempo para America/Recife
+      timezone:
+        name: America/Recife
+
+    - name: Instalar Chrony (NTP)
+      apt:
+        name: chrony
+        state: present
+
+    - name: Configurar Servidor NTP pool.ntp.br
+      lineinfile:
+        path: /etc/chrony/chrony.conf
+        regexp: '^pool '
+        line: 'pool pool.ntp.br iburst'
+      notify: restart_chrony
+
+    - name: Criar grupo ifpb
+      group:
+        name: ifpb
+        state: present
+
+    - name: Criar usuários Pedro e Vercosa
+      user:
+        name: "{{ item }}"
+        group: ifpb
+        shell: /bin/bash
+      loop:
+        - pedro
+        - vercosa
+
+    - name: Permitir que o grupo ifpb use SUDO sem senha
+      copy:
+        content: "%ifpb ALL=(ALL) NOPASSWD:ALL"
+        dest: /etc/sudoers.d/ifpb
+        mode: '0440'
+
+  handlers:
+    - name: restart_chrony
+      service:
+        name: chrony
+        state: restarted

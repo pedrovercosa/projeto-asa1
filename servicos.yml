@@ -1,0 +1,26 @@
+---
+- name: Instalar Banco de Dados
+  hosts: db
+  become: yes
+  tasks:
+    - name: Instalar MariaDB
+      apt:
+        name: mariadb-server
+        state: present
+    - name: Garantir que MariaDB está rodando
+      service:
+        name: mariadb
+        state: started
+
+- name: Instalar Servidor Web
+  hosts: app
+  become: yes
+  tasks:
+    - name: Instalar Apache2
+      apt:
+        name: apache2
+        state: present
+    - name: Criar index.html personalizado
+      copy:
+        content: "<h1>Projeto ASA - Pedro e Vercosa</h1><p>Servidor APP funcionando!</p>"
+        dest: /var/www/html/index.html

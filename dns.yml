@@ -1,0 +1,43 @@
+---
+- name: Configurar DNS Master (ARQ)
+  hosts: arq
+  become: yes
+  tasks:
+    - name: Instalar Bind9
+      apt:
+        name: bind9
+        state: present
+
+    - name: Configurar named.conf.local
+      copy:
+        content: |
+          zone "pedro.vercosa.devops" {
+              type master;
+              file "/etc/bind/db.pedro.vercosa.devops";
+          };
+        dest: /etc/bind/named.conf.local
+
+    - name: Criar arquivo de zona
+      copy:
+        content: |
+          $TTL    604800
+          @       IN      SOA     arq.pedro.vercosa.devops. root.pedro.vercosa.devops. (
+                                        3         ; Serial
+                                   604800         ; Refresh
+                                    86400         ; Retry
+                                  2419200         ; Expire
+                                   604800 )       ; Negative Cache TTL
+          ;
+          @       IN      NS      arq.pedro.vercosa.devops.
+          arq     IN      A       192.168.56.136
+          db      IN      A       192.168.56.10
+          app     IN      A       192.168.56.11
+          cli     IN      A       192.168.56.12
+        dest: /etc/bind/db.pedro.vercosa.devops
+      notify: restart_bind
+
+  handlers:
+    - name: restart_bind
+      service:
+        name: bind9
+        state: restarted

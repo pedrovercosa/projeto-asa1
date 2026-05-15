@@ -1,0 +1,39 @@
+---
+- name: Configurar Infraestrutura de Rede (ARQ)
+  hosts: arq
+  become: yes
+  tasks:
+    - name: Instalar DHCP e DNS (Bind9)
+      apt:
+        name: 
+          - isc-dhcp-server
+          - bind9
+        state: present
+
+    - name: Configurar Interface do DHCP
+      lineinfile:
+        path: /etc/default/isc-dhcp-server
+        regexp: '^INTERFACESv4='
+        line: 'INTERFACESv4="eth1"'
+
+    - name: Configurar escopo do DHCP (dhcpd.conf)
+      copy:
+        content: |
+          option domain-name "pedro.vercosa.devops";
+          option domain-name-servers 192.168.56.136;
+          default-lease-time 600;
+          max-lease-time 7200;
+          authoritative;
+
+          subnet 192.168.56.0 netmask 255.255.255.0 {
+            range 192.168.56.10 192.168.56.50;
+            option routers 192.168.56.136;
+          }
+        dest: /etc/dhcp/dhcpd.conf
+      notify: restart_dhcp
+
+  handlers:
+    - name: restart_dhcp
+      service:
+        name: isc-dhcp-server
+        state: restarted
