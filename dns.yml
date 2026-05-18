@@ -8,16 +8,21 @@
         name: bind9
         state: present
 
-    - name: Configurar named.conf.local
+    - name: Configurar named.conf.local (Zonas Direta e Reversa)
       copy:
         content: |
           zone "pedro.vercosa.devops" {
               type master;
               file "/etc/bind/db.pedro.vercosa.devops";
           };
+
+          zone "56.168.192.in-addr.arpa" {
+              type master;
+              file "/etc/bind/db.192.168.56";
+          };
         dest: /etc/bind/named.conf.local
 
-    - name: Criar arquivo de zona
+    - name: Criar arquivo de zona DIRETA
       copy:
         content: |
           $TTL    604800
@@ -30,10 +35,28 @@
           ;
           @       IN      NS      arq.pedro.vercosa.devops.
           arq     IN      A       192.168.56.136
-          db      IN      A       192.168.56.10
-          app     IN      A       192.168.56.11
+          db      IN      A       192.168.56.137
+          app     IN      A       192.168.56.138
           cli     IN      A       192.168.56.12
         dest: /etc/bind/db.pedro.vercosa.devops
+
+    - name: Criar arquivo de zona REVERSA
+      copy:
+        content: |
+          $TTL    604800
+          @       IN      SOA     arq.pedro.vercosa.devops. root.pedro.vercosa.devops. (
+                                        3         ; Serial
+                                   604800         ; Refresh
+                                    86400         ; Retry
+                                  2419200         ; Expire
+                                   604800 )       ; Negative Cache TTL
+          ;
+          @       IN      NS      arq.pedro.vercosa.devops.
+          136     IN      PTR     arq.pedro.vercosa.devops.
+          137     IN      PTR     db.pedro.vercosa.devops.
+          138     IN      PTR     app.pedro.vercosa.devops.
+          12      IN      PTR     cli.pedro.vercosa.devops.
+        dest: /etc/bind/db.192.168.56
       notify: restart_bind
 
   handlers:
