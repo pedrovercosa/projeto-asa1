@@ -8,26 +8,23 @@
         name: lvm2
         state: present
 
-    - name: Criar Volume Group (VG) chamado vg_dados
+    - name: Criar Volume Group (VG) chamado dados
       lvg:
-        vg: vg_dados
+        vg: dados
         pvs: /dev/sdb,/dev/sdc,/dev/sdd
-        pvresize: yes
 
-    - name: Criar Logical Volume (LV) de 15GB
-      # se tiver menos que isso, ele usa o máximo disponível.
+    - name: Criar Logical Volume (LV) chamado ifpb com 15GB
       lvol:
-        vg: vg_dados
-        lv: lv_arquivos
+        vg: dados
+        lv: ifpb
         size: 15G
-        force: yes
 
     - name: Formatar o volume com sistema de arquivos EXT4
       filesystem:
         fstype: ext4
-        dev: /dev/vg_dados/lv_arquivos
+        dev: /dev/dados/ifpb
 
-    - name: Criar diretório de montagem /dados
+    - name: Garantir que o diretório /dados existe
       file:
         path: /dados
         state: directory
@@ -36,6 +33,6 @@
     - name: Montar o volume de forma persistente
       mount:
         path: /dados
-        src: /dev/vg_dados/lv_arquivos
+        src: /dev/dados/ifpb
         fstype: ext4
         state: mounted
