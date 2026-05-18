@@ -17,8 +17,8 @@ Este projeto automatiza o provisionamento e a configuração de uma infraestrutu
 ## 🛠️ Estrutura da Infraestrutura
 O ambiente é composto pelas seguintes máquinas virtuais (`debian/bookworm64`):
 1. **arq (192.168.56.136):** Servidor de arquivos, LVM, DHCP, DNS Master e NFS Server.
-2. **db (192.168.56.137):** Servidor de Banco de Dados (MariaDB), IP reservado por DHCP.
-3. **app (192.168.56.138):** Servidor de Aplicação Web (Apache2), IP reservado por DHCP.
+2. **db (192.168.56.138):** Servidor de Banco de Dados (MariaDB), IP reservado por DHCP.
+3. **app (192.168.56.137):** Servidor de Aplicação Web (Apache2), IP reservado por DHCP.
 4. **cli (IP Dinâmico via DHCP):** Estação cliente com 1024 MB de RAM para testes de serviços de rede.
 
 ---
