@@ -47,6 +47,12 @@
           - nfs-common
         state: present
 
+    - name: Garantir que o diretório de destino /var/nfs existe nos clientes
+      file:
+        path: /var/nfs
+        state: directory
+        mode: '0755'
+
     - name: Configurar mapa mestre do Autofs (Uso de Mapa Direto)
       lineinfile:
         path: /etc/auto.master
