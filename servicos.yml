@@ -22,9 +22,29 @@
         name: apache2
         state: present
 
-    - name: Criar index.html personalizado
+    - name: Criar index.html personalizado com dados do escopo
       copy:
-        content: "<h1>Projeto ASA - Pedro e Vercosa</h1><p>Servidor APP funcionando!</p>"
+        content: |
+          <!DOCTYPE html>
+          <html lang="pt-br">
+          <head>
+              <meta charset="UTF-8">
+              <title>Projeto 01 - DevOps com Vagrant e Ansible</title>
+          </head>
+          <body>
+              <h1>Projeto 01 - DevOps com Vagrant e Ansible</h1>
+              <h2>Disciplina: Administração de Sistemas Abertos</h2>
+              
+              <h3>Descrição do Projeto:</h3>
+              <p>Este projeto consiste na automatização e provisionamento de uma infraestrutura virtualizada multihost utilizando Vagrant e Ansible. O ambiente engloba a configuração automatizada de serviços essenciais de rede e armazenamento (como DHCP, DNS, LVM e NFS), além de servidores dedicados de banco de dados e aplicação web de forma segura e resiliente.</p>
+              
+              <h3>Equipe de Desenvolvimento:</h3>
+              <ul>
+                  <li><strong>Pedro</strong> (Matrícula: XXX36)</li>
+                  <li><strong>Vercosa</strong> (Matrícula: YYY36)</li>
+              </ul>
+          </body>
+          </html>
         dest: /var/www/html/index.html
 
 - name: Configurar Host Cliente (CLI)
