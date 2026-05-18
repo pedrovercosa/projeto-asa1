@@ -29,28 +29,27 @@
         name: ifpb
         state: present
 
-    - name: Criar os usuários pedro e vercosa e gerar suas chaves SSH
+    - name: Criar os usuários pedro e vercosa
       user:
         name: "{{ item }}"
         group: ifpb
         shell: /bin/bash
-        generate_ssh_key: yes
-        ssh_key_bits: 2048
-        ssh_key_file: .ssh/id_rsa
       loop:
         - pedro
         - vercosa
 
-    - name: Autorizar a chave pública no authorized_keys de cada usuário
-      shell: |
-        cat /home/{{ item }}/.ssh/id_rsa.pub > /home/{{ item }}/.ssh/authorized_keys
-        chmod 600 /home/{{ item }}/.ssh/authorized_keys
-        chown {{ item }}:ifpb /home/{{ item }}/.ssh/authorized_keys
+    # O módulo authorized_key cria a pasta .ssh, o arquivo authorized_keys,
+    # aplica o chmod correto (600) e o chown do usuário automaticamente!
+    - name: Autorizar chave pública para acesso SSH dos usuários
+      ansible.posix.authorized_key:
+        user: "{{ item }}"
+        state: present
+        # lookup('file', ...) busca uma chave pública que está na sua máquina real (hospedeiro)
+        # Substitua pelo caminho da sua chave pública real ou de um arquivo id_rsa.pub do seu projeto
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
       loop:
         - pedro
         - vercosa
-      args:
-        creates: "/home/{{ item }}/.ssh/authorized_keys"
 
     - name: Instalar cliente NFS em todas as máquinas
       apt:
