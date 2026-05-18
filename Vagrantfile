@@ -10,6 +10,7 @@ Vagrant.configure("2") do |config|
 
   # Desativa a geração de chaves SSH automática
   config.ssh.insert_key = false
+  config.ssh.keys_only = true
 
   # --- Servidor de Arquivos (ARQ) ---
   config.vm.define "arq" do |arq|
