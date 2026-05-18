@@ -21,24 +21,24 @@
         content: |
           option domain-name "pedro.vercosa.devops";
           option domain-name-servers 192.168.56.136;
-          default-lease-time 180; # Solicitado no PDF
-          max-lease-time 3600;    # Solicitado no PDF
+          default-lease-time 180; # Solicitado no PDF (180 segundos)
+          max-lease-time 3600;    # Solicitado no PDF (3600 segundos)
           authoritative;
 
           subnet 192.168.56.0 netmask 255.255.255.0 {
-            range 192.168.56.50 192.168.56.100; # Solicitado no PDF
+            range 192.168.56.50 192.168.56.100; # Solicitado no PDF (faixa entre 50 e 100)
             option routers 192.168.56.1;       # Gateway solicitado no PDF
           }
 
-          # IP Estático para o DB por MAC (XY = 37)
-          host db_server {
-            hardware ethernet 08:00:27:AA:AA:01;
+          # IP Estático para o APP por MAC (XY = 37)
+          host app_server {
+            hardware ethernet 08:00:27:AA:AA:02;
             fixed-address 192.168.56.137;
           }
 
-          # IP Estático para o APP por MAC (YY = 38)
-          host app_server {
-            hardware ethernet 08:00:27:AA:AA:02;
+          # IP Estático para o DB por MAC (YY = 38)
+          host db_server {
+            hardware ethernet 08:00:27:AA:AA:01;
             fixed-address 192.168.56.138;
           }
         dest: /etc/dhcp/dhcpd.conf
