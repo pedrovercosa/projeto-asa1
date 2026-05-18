@@ -29,14 +29,28 @@
         name: ifpb
         state: present
 
-    - name: Criar usuários Pedro e Vercosa
+    - name: Criar os usuários pedro e vercosa e gerar suas chaves SSH
       user:
         name: "{{ item }}"
         group: ifpb
         shell: /bin/bash
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa
       loop:
         - pedro
         - vercosa
+
+    - name: Autorizar a chave pública no authorized_keys de cada usuário
+      shell: |
+        cat /home/{{ item }}/.ssh/id_rsa.pub > /home/{{ item }}/.ssh/authorized_keys
+        chmod 600 /home/{{ item }}/.ssh/authorized_keys
+        chown {{ item }}:ifpb /home/{{ item }}/.ssh/authorized_keys
+      loop:
+        - pedro
+        - vercosa
+      args:
+        creates: "/home/{{ item }}/.ssh/authorized_keys"
 
     - name: Instalar cliente NFS em todas as máquinas
       apt:
