@@ -11,6 +11,7 @@
     - name: Criar usuário nfs-ifpb sem shell
       user:
         name: nfs-ifpb
+        uid: 1500
         shell: /usr/sbin/nologin
         state: present
 
@@ -20,13 +21,12 @@
         state: directory
         owner: nfs-ifpb
         group: ifpb
-        mode: '0770'
+        mode: '0700' # '0700' garante escrita APENAS para o usuário nfs-ifpb, conforme o PDF
 
     - name: Configurar /etc/exports com mapeamento anonuid
       lineinfile:
         path: /etc/exports
-        line: "/dados/nfs 192.168.56.0/24(rw,sync,all_squash,anonuid=1002,anongid=1002)" 
-        # garantir que o UID/GID (1002) seja o mesmo gerado para o nfs-ifpb
+        line: "/dados/nfs 192.168.56.0/24(rw,sync,all_squash,anonuid=1500,anongid=1500)" 
         create: yes
       notify: restart_nfs
 
