@@ -33,6 +33,6 @@ O ambiente é composto pelas seguintes máquinas virtuais (`debian/bookworm64`):
 ### Passo a Passo:
 1. Clone este repositório na sua máquina:
    ```bash
-   git clone (https://github.com/pedrovercosa/projeto-asa1.git)
+   git clone https://github.com/pedrovercosa/projeto-asa1.git
    cd <NOME_DA_PASTA>
 2. Vagrant up.
