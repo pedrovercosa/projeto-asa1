@@ -8,16 +8,25 @@
         name: nfs-kernel-server
         state: present
 
-    - name: Criar diretório de exportação
-      file:
-        path: /mnt/arquivos
-        state: directory
-        mode: '0777'
+    - name: Criar usuário nfs-ifpb sem shell
+      user:
+        name: nfs-ifpb
+        shell: /usr/sbin/nologin
+        state: present
 
-    - name: Configurar /etc/exports
+    - name: Criar diretório de exportação NFS
+      file:
+        path: /dados/nfs
+        state: directory
+        owner: nfs-ifpb
+        group: ifpb
+        mode: '0770'
+
+    - name: Configurar /etc/exports com mapeamento anonuid
       lineinfile:
         path: /etc/exports
-        line: "/mnt/arquivos 192.168.56.0/24(rw,sync,no_root_squash,no_subtree_check,insecure)"
+        line: "/dados/nfs 192.168.56.0/24(rw,sync,all_squash,anonuid=1002,anongid=1002)" 
+        # garantir que o UID/GID (1002) seja o mesmo gerado para o nfs-ifpb
         create: yes
       notify: restart_nfs
 
@@ -27,25 +36,30 @@
         name: nfs-kernel-server
         state: restarted
 
-- name: Configurar Clientes NFS
+- name: Configurar Clientes NFS via Autofs
   hosts: db,app,cli
   become: yes
   tasks:
-    - name: Instalar cliente NFS
+    - name: Instalar autofs e nfs-common
       apt:
-        name: nfs-common
+        name:
+          - autofs
+          - nfs-common
         state: present
 
-    - name: Criar ponto de montagem
-      file:
-        path: /mnt/dados
-        state: directory
+    - name: Configurar mapa mestre do Autofs
+      lineinfile:
+        path: /etc/auto.master
+        line: "/var /etc/auto.nfs --timeout=60"
 
-    - name: Montar compartilhamento NFS
-      mount:
-        path: /mnt/dados
-        src: 192.168.56.136:/mnt/arquivos
-        fstype: nfs
-        # Forçamos nfsvers=3 e tcp para estabilidade total na rede interna
-        opts: "nfsvers=3,proto=tcp,nolock,soft"
-        state: mounted
+    - name: Criar arquivo de mapeamento auto.nfs
+      copy:
+        content: "nfs -fstype=nfs,rw,soft,tcp 192.168.56.136:/dados/nfs"
+        dest: /etc/auto.nfs
+      notify: restart_autofs
+
+  handlers:
+    - name: restart_autofs
+      service:
+        name: autofs
+        state: restarted
