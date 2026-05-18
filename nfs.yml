@@ -21,12 +21,12 @@
         state: directory
         owner: nfs-ifpb
         group: ifpb
-        mode: '0700' # '0700' garante escrita APENAS para o usuário nfs-ifpb, conforme o PDF
+        [cite_start]mode: '0700' # '0700' garante escrita APENAS para o usuário nfs-ifpb, conforme o PDF [cite: 108]
 
     - name: Configurar /etc/exports com mapeamento anonuid
       lineinfile:
         path: /etc/exports
-        line: "/dados/nfs 192.168.56.0/24(rw,sync,all_squash,anonuid=1500,anongid=1500)" 
+        [cite_start]line: "/dados/nfs 192.168.56.0/24(rw,sync,all_squash,anonuid=1500,anongid=1500)" [cite: 105, 107, 120, 121]
         create: yes
       notify: restart_nfs
 
@@ -47,14 +47,15 @@
           - nfs-common
         state: present
 
-    - name: Configurar mapa mestre do Autofs
+    - name: Configurar mapa mestre do Autofs (Uso de Mapa Direto)
       lineinfile:
         path: /etc/auto.master
-        line: "/var /etc/auto.nfs --timeout=60"
+        line: "/- /etc/auto.nfs --timeout=60"
+      notify: restart_autofs
 
-    - name: Criar arquivo de mapeamento auto.nfs
+    - name: Criar arquivo de mapeamento auto.nfs (Mapeando o caminho completo)
       copy:
-        content: "nfs -fstype=nfs,rw,soft,tcp 192.168.56.136:/dados/nfs"
+        [cite_start]content: "/var/nfs -fstype=nfs,rw,soft,tcp arq.pedro.vercosa.devops:/dados/nfs" [cite: 125, 129, 133]
         dest: /etc/auto.nfs
       notify: restart_autofs
 
