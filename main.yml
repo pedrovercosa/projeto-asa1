@@ -1,0 +1,7 @@
+---
+- import_playbook: provimento.yml
+- import_playbook: lvm.yml
+- import_playbook: servicos_rede.yml
+- import_playbook: dns.yml
+- import_playbook: nfs.yml
+- import_playbook: servicos.yml
