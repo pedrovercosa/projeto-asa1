@@ -44,8 +44,35 @@
         dest: /etc/sudoers.d/ifpb
         mode: '0440'
 
+    - name: Configurar regras do SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^#?PermitRootLogin', line: 'PermitRootLogin no' }
+        - { regexp: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
+        - { regexp: '^#?AllowGroups', line: 'AllowGroups vagrant ifpb' } # Restrição de grupo
+
+    - name: Configurar Mensagem de Saudação Exata (Banner SSH)
+      copy:
+        content: "Acesso apenas para pessoas com autorização expressa!!!"
+        dest: /etc/issue.net
+
+    - name: Apontar o Banner no sshd_config
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?Banner'
+        line: 'Banner /etc/issue.net'
+      notify: restart_ssh
+
   handlers:
     - name: restart_chrony
       service:
         name: chrony
+        state: restarted
+
+    - name: restart_ssh
+      service:
+        name: ssh
         state: restarted
