@@ -21,12 +21,12 @@
         state: directory
         owner: nfs-ifpb
         group: ifpb
-        [cite_start]mode: '0700' # '0700' garante escrita APENAS para o usuário nfs-ifpb, conforme o PDF [cite: 108]
+        mode: '0700'
 
     - name: Configurar /etc/exports com mapeamento anonuid
       lineinfile:
         path: /etc/exports
-        [cite_start]line: "/dados/nfs 192.168.56.0/24(rw,sync,all_squash,anonuid=1500,anongid=1500)" [cite: 105, 107, 120, 121]
+        line: "/dados/nfs 192.168.56.0/24(rw,sync,all_squash,anonuid=1500,anongid=1500)"
         create: yes
       notify: restart_nfs
 
@@ -61,7 +61,7 @@
 
     - name: Criar arquivo de mapeamento auto.nfs (Mapeando o caminho completo)
       copy:
-        [cite_start]content: "/var/nfs -fstype=nfs,rw,soft,tcp arq.pedro.vercosa.devops:/dados/nfs" [cite: 125, 129, 133]
+        content: "/var/nfs -fstype=nfs,rw,soft,tcp arq.pedro.vercosa.devops:/dados/nfs"
         dest: /etc/auto.nfs
       notify: restart_autofs
 
