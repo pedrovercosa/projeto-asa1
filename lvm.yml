@@ -9,15 +9,13 @@
         state: present
 
     - name: Criar Volume Group (VG) chamado vg_dados
-      # Aqui ele agrupa os 3 discos extras que o Vagrant criou
       lvg:
         vg: vg_dados
         pvs: /dev/sdb,/dev/sdc,/dev/sdd
         pvresize: yes
 
     - name: Criar Logical Volume (LV) de 15GB
-      # Usamos '15G' para bater com o roteiro. Se os discos somados 
-      # tiverem menos que isso, ele usará o máximo disponível.
+      # se tiver menos que isso, ele usa o máximo disponível.
       lvol:
         vg: vg_dados
         lv: lv_arquivos
@@ -29,15 +27,15 @@
         fstype: ext4
         dev: /dev/vg_dados/lv_arquivos
 
-    - name: Criar diretório de montagem /mnt/arquivos
+    - name: Criar diretório de montagem /dados
       file:
-        path: /mnt/arquivos
+        path: /dados
         state: directory
         mode: '0755'
 
     - name: Montar o volume de forma persistente
       mount:
-        path: /mnt/arquivos
+        path: /dados
         src: /dev/vg_dados/lv_arquivos
         fstype: ext4
         state: mounted
