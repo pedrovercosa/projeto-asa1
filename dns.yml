@@ -54,7 +54,7 @@
           arq     IN      A       192.168.56.136
           db      IN      A       192.168.56.137
           app     IN      A       192.168.56.138
-          cli     IN      A       192.168.56.12
+          cli     IN      A       192.168.56.50
         dest: /etc/bind/db.pedro.vercosa.devops
       notify: restart_bind
 
@@ -73,7 +73,7 @@
           136     IN      PTR     arq.pedro.vercosa.devops.
           137     IN      PTR     db.pedro.vercosa.devops.
           138     IN      PTR     app.pedro.vercosa.devops.
-          12      IN      PTR     cli.pedro.vercosa.devops.
+          50      IN      PTR     cli.pedro.vercosa.devops.
         dest: /etc/bind/db.192.168.56
       notify: restart_bind
 
