@@ -2,11 +2,11 @@
 
 Este projeto automatiza o provisionamento e a configuração de uma infraestrutura de rede local composta por quatro máquinas virtuais utilizando Vagrant e Ansible.
 
-## 👥 Integrantes
+## Integrantes
 * **Aluno 1:** Pedro (Matrícula Final: 36)
 * **Aluno 2:** Vercosa (Matrícula Final: 36 também, mas fui editando!)
 
-## 📘 Disciplina e Professor
+## Disciplina e Professor
 * **Disciplina:** Administração de Sistemas Abertos (ASA)
 * **Professor:** Leonidas Lima
 * **Período:** 2026.1
@@ -14,7 +14,7 @@ Este projeto automatiza o provisionamento e a configuração de uma infraestrutu
 
 ---
 
-## 🛠️ Estrutura da Infraestrutura
+## Estrutura da Infraestrutura
 O ambiente é composto pelas seguintes máquinas virtuais (`debian/bookworm64`):
 1. **arq (192.168.56.136):** Servidor de arquivos, LVM, DHCP, DNS Master e NFS Server.
 2. **db (192.168.56.138):** Servidor de Banco de Dados (MariaDB), IP reservado por DHCP.
@@ -23,7 +23,7 @@ O ambiente é composto pelas seguintes máquinas virtuais (`debian/bookworm64`):
 
 ---
 
-## 🚀 Como Executar o Projeto
+## Como Executar o Projeto
 
 ### Pré-requisitos:
 * **VirtualBox** instalado.
