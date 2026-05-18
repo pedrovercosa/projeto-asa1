@@ -6,7 +6,7 @@
     - name: Atualizar repositório e sistema
       apt:
         update_cache: yes
-        #upgrade: dist
+        upgrade: dist
 
     - name: Ajustar Zona de Tempo para America/Recife
       timezone:
@@ -38,9 +38,14 @@
         - pedro
         - vercosa
 
-    - name: Permitir que o grupo ifpb use SUDO sem senha
+    - name: Instalar cliente NFS em todas as máquinas
+      apt:
+        name: nfs-common
+        state: present
+
+    - name: Permitir que usuários do grupo ifpb tenham acesso de root usando sudo
       copy:
-        content: "%ifpb ALL=(ALL) NOPASSWD:ALL"
+        content: "%ifpb ALL=(ALL) ALL"
         dest: /etc/sudoers.d/ifpb
         mode: '0440'
 
