@@ -7,6 +7,7 @@
       apt:
         name: mariadb-server
         state: present
+
     - name: Garantir que MariaDB está rodando
       service:
         name: mariadb
@@ -20,7 +21,32 @@
       apt:
         name: apache2
         state: present
+
     - name: Criar index.html personalizado
       copy:
         content: "<h1>Projeto ASA - Pedro e Vercosa</h1><p>Servidor APP funcionando!</p>"
         dest: /var/www/html/index.html
+
+- name: Configurar Host Cliente (CLI)
+  hosts: cli
+  become: yes
+  tasks:
+    - name: Instalar Firefox e Xauth
+      apt:
+        name:
+          - firefox-esr
+          - xauth
+        state: present
+
+    - name: Permitir encaminhamento X11 no SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?X11Forwarding'
+        line: 'X11Forwarding yes'
+      notify: restart_ssh
+
+  handlers:
+    - name: restart_ssh
+      service:
+        name: ssh
+        state: restarted
