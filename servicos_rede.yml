@@ -30,16 +30,16 @@
             option routers 192.168.56.1;       # Gateway solicitado no PDF
           }
 
-          # IP Estático para o DB por MAC
+          # IP Estático para o DB por MAC (XY = 37)
           host db_server {
             hardware ethernet 08:00:27:AA:AA:01;
-            fixed-address 192.168.56.110; # <-- Ajuste com os dígitos da matrícula do Integrante 2
+            fixed-address 192.168.56.137;
           }
 
-          # IP Estático para o APP por MAC
+          # IP Estático para o APP por MAC (YY = 38)
           host app_server {
             hardware ethernet 08:00:27:AA:AA:02;
-            fixed-address 192.168.56.111; # <-- Ajuste com a combinação das duas matrículas
+            fixed-address 192.168.56.138;
           }
         dest: /etc/dhcp/dhcpd.conf
       notify: restart_dhcp
